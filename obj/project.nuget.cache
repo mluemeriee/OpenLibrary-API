@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "AlFuZCQkk3w=",
+  "dgSpecHash": "Q7eI9MQVSbA=",
   "success": true,
-  "projectFilePath": "C:\\xampp\\htdocs\\API\\mobileapi\\MobileApi.csproj",
+  "projectFilePath": "C:\\xampp\\htdocs\\API\\MobileApi\\MobileApi.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Acer\\.nuget\\packages\\microsoft.entityframeworkcore\\10.0.7\\microsoft.entityframeworkcore.10.0.7.nupkg.sha512",
     "C:\\Users\\Acer\\.nuget\\packages\\microsoft.entityframeworkcore.abstractions\\10.0.7\\microsoft.entityframeworkcore.abstractions.10.0.7.nupkg.sha512",

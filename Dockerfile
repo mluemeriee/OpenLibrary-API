@@ -1,26 +1,23 @@
-# Stage 1: Build using .NET 10 SDK
+# Stage 1: Build
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
-WORKDIR /source
+WORKDIR /app
 
-# Copy everything from your GitHub repo
+# Copy everything
 COPY . .
 
-# Move into the folder where the code lives
-# IMPORTANT: This must match your folder name exactly (Case-Sensitive!)
-WORKDIR /source/MobileApi
+# This command finds your .csproj file automatically and restores it
+RUN dotnet restore $(find . -name "*.csproj" | head -n 1)
 
-# Restore and Publish
-RUN dotnet restore
-RUN dotnet publish -c Release -o /app/publish
+# This builds the project found above
+RUN dotnet publish $(find . -name "*.csproj" | head -n 1) -c Release -o /out
 
-# Stage 2: Runtime using .NET 10 ASP.NET
+# Stage 2: Runtime
 FROM mcr.microsoft.com/dotnet/aspnet:10.0
 WORKDIR /app
-COPY --from=build /app/publish .
+COPY --from=build /out .
 
-# Render's required port
 ENV ASPNETCORE_URLS=http://+:10000
 EXPOSE 10000
 
-# Matches your .csproj name exactly
+# IMPORTANT: This must match your 'MobileApi.csproj' name exactly
 ENTRYPOINT ["dotnet", "MobileApi.dll"]
