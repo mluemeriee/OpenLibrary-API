@@ -1,25 +1,18 @@
-# Build Stage
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
-WORKDIR /source
+# Stage 1: Build the application
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
+WORKDIR /app
 
-# 1. Copy the project file from the subfolder
-COPY ["MobileApi/MobileApi.csproj", "MobileApi/"]
+# Copy everything and restore/publish
+COPY . ./
+RUN dotnet publish -c Release -o out
 
-# 2. Restore dependencies
-RUN dotnet restore "MobileApi/MobileApi.csproj"
-
-# 3. Copy everything else and build
-COPY . .
-WORKDIR "/source/MobileApi"
-RUN dotnet publish "MobileApi.csproj" -c Release -o /app/publish
-
-# Run Stage
+# Stage 2: Run the application
 FROM mcr.microsoft.com/dotnet/aspnet:8.0
 WORKDIR /app
-COPY --from=build /app/publish .
+COPY --from=build /app/out .
 
+# Tell Render which port to use (Render defaults to 10000)
 ENV ASPNETCORE_URLS=http://+:10000
 EXPOSE 10000
 
-# Match the casing exactly as seen in your screenshot: MobileApi
 ENTRYPOINT ["dotnet", "MobileApi.dll"]
