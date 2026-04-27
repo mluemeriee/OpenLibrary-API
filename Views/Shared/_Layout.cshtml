@@ -5,6 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewData["Title"] - The Literary Archives</title>    
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <style>
+        /* Specific rule to force the footer text to the center */
+        .centered-footer {
+            display: block !important;
+            text-align: center !important;
+            width: 100% !important;
+            padding: 1.5rem 0;
+        }
+    </style>
 </head>
 <body>
     <div class="page-shell">
@@ -34,8 +43,8 @@
             </div>
         </main>
 
-        <footer class="border-top footer text-muted">
-            <div class="container text-center">
+        <footer class="border-top footer text-muted centered-footer">
+            <div class="container">
                 All rights reserved to all authors. &copy; 2026 - The Literary Archives
             </div>
         </footer>
