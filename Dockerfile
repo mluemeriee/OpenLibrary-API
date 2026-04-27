@@ -5,12 +5,9 @@ WORKDIR /app
 # 1. Copy everything
 COPY . .
 
-# 2. DIAGNOSTIC: List all files so we can see the path
-RUN ls -R
-
-# 3. Use a wildcards to find the project regardless of folder depth
-RUN dotnet restore $(find . -name "*.csproj")
-RUN dotnet publish $(find . -name "*.csproj") -c Release -o /out
+# 2. Force the build to search the entire system for the project
+RUN dotnet restore $(find /app -name "*.csproj")
+RUN dotnet publish $(find /app -name "*.csproj") -c Release -o /out
 
 # Stage 2: Runtime
 FROM mcr.microsoft.com/dotnet/aspnet:10.0
@@ -20,5 +17,5 @@ COPY --from=build /out .
 ENV ASPNETCORE_URLS=http://+:10000
 EXPOSE 10000
 
-# Matches your project name
+# This matches the DLL name from your screenshot
 ENTRYPOINT ["dotnet", "MobileApi.dll"]
