@@ -1,24 +1,25 @@
 # Stage 1: Build
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
-WORKDIR /src
+WORKDIR /app
 
-# Copy everything from the current directory
+# Copy everything
 COPY . .
 
-# DIAGNOSTIC: This will print the file list in your Render logs
-RUN ls -la
+# DELETE any local bin/obj/dll files that might have been pushed
+RUN rm -rf **/bin **/obj *.dll
 
-# Build the project (This looks specifically for the .csproj you just moved)
+# Build fresh
 RUN dotnet restore
-RUN dotnet publish -c Release -o /app/publish
+RUN dotnet publish -c Release -o /out
 
 # Stage 2: Runtime
 FROM mcr.microsoft.com/dotnet/aspnet:10.0
 WORKDIR /app
-COPY --from=build /app/publish .
+COPY --from=build /out .
 
+# Render's specific port requirements
 ENV ASPNETCORE_URLS=http://+:10000
 EXPOSE 10000
 
-# Entry point for the app
-ENTRYPOINT ["dotnet", "MobileApi.csprog"]
+# Ensure the name is exactly MobileApi.dll (case-sensitive)
+ENTRYPOINT ["dotnet", "MobileApi.csproj"]
