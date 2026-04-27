@@ -1,0 +1,131 @@
+﻿@model OpenLibraryResponse
+@{
+    ViewData["Title"] = "Discover";
+    var searchTerm = ViewBag.SearchTerm as string;
+    var error = ViewBag.ErrorMessage as string;
+}
+
+<section class="hero">
+    <div class="hero-grid">
+        <div class="hero-panel">
+            <div class="eyebrow">Curated reading, research, and quiet corners</div>
+            <h1>A calmer way to explore stories and scholarship.</h1>
+            <p>
+                A modern library homepage built around discovery, warmth, and focus. Search titles instantly,
+                browse featured services, and enjoy a layout that stays clean.
+            </p>
+            <div class="hero-actions">
+                <a class="button primary" href="#catalog">Search the collection</a>
+                <a class="button secondary" href="#spaces">View library services</a>
+            </div>
+            <div class="hero-stats">
+                <div><strong>40k+</strong> <span>Cataloged works</span></div>
+                <div><strong>Daily</strong> <span>API Updates</span></div>
+                <div><strong>Mobile</strong> <span>Responsive</span></div>
+            </div>
+        </div>
+
+        <aside class="feature-panel" id="spaces">
+            <div class="feature-art" aria-hidden="true">
+                <div class="stack-card one">
+                    <h3>Quiet Study Rooms</h3>
+                    <p>Soft natural tones and flexible layouts for focused work.</p>
+                </div>
+                <div class="stack-card two">
+                    <h3>Reader Services</h3>
+                    <p>Research help and digital access in one portal.</p>
+                </div>
+            </div>
+            <div class="feature-copy">
+                <h2>Designed with a library atmosphere in mind</h2>
+                <p>The interface uses a palette to balance depth and softness.</p>
+            </div>
+        </aside>
+    </div>
+</section>
+
+<section class="main-grid" id="catalog">
+    <div class="section-card">
+        <div class="results-header">
+            <div>
+                <h2>Search the catalog</h2>
+                <p>Look up a title and browse the first matching records.</p>
+            </div>
+        </div>
+
+        @* The Search Form *@
+        <form method="GET" asp-action="Index" class="search-form">
+            <label class="input-wrap">
+                <span>Search</span>
+                <input type="text" name="book_query" placeholder="Try: The Hobbit, Atomic Habits" 
+                       required value="@searchTerm" />
+            </label>
+            <button type="submit">Find Books</button>
+        </form>
+
+        <div class="search-tags" id="discover">
+            <span class="pill">Fiction</span>
+            <span class="pill">Reference</span>
+            <span class="pill">Research</span>
+        </div>
+
+        @* Results Logic *@
+        @if (!string.IsNullOrEmpty(searchTerm))
+        {
+            <div style="margin-top: 1.5rem;">
+                @if (!string.IsNullOrEmpty(error))
+                {
+                    <div class="book-item">
+                        <strong>Connection issue</strong>
+                        <p>@error</p>
+                    </div>
+                }
+                else if (Model.Docs.Any())
+                {
+                    <div class="results-header">
+                        <h3>@Model.NumFound matches for "@searchTerm"</h3>
+                    </div>
+                    <div class="results-list">
+                        @foreach (var book in Model.Docs)
+                        {
+                            <article class="book-item">
+                                <div class="book-top">
+                                    <div>
+                                        <strong>@book.Title</strong>
+                                        <em>by @(book.Author_Name != null ? string.Join(", ", book.Author_Name) : "Unknown")</em>
+                                    </div>
+                                    <div class="year-badge">@book.First_Publish_Year</div>
+                                </div>
+                                <div class="book-meta">
+                                    <span>@book.Edition_Count editions</span>
+                                    @foreach (var sub in book.Subject?.Take(3) ?? Enumerable.Empty<string>())
+                                    {
+                                        <span>@sub</span>
+                                    }
+                                </div>
+                            </article>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="book-item">
+                        <strong>No matches found</strong>
+                        <p>Try another title or a broader keyword.</p>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+
+    <aside class="aside-stack">
+        <div class="section-card">
+            <h3>What visitors can do</h3>
+            <p>Browse the collection and keep the experience smooth across screens.</p>
+            <div class="mini-grid">
+                <div class="mini-card"><strong>Borrow & Renew</strong><span>Track titles easily.</span></div>
+                <div class="mini-card"><strong>Research</strong><span>Surface digital resources.</span></div>
+            </div>
+        </div>
+    </aside>
+</section>

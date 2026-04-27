@@ -1,0 +1,46 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"] - Leaf & Lantern Library</title>
+    
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+    <div class="page-shell">
+        <header class="site-header">
+            <div class="container">
+                <div class="header-bar">
+                    <div class="brand">
+                        <div class="brand-mark" aria-hidden="true">⌘</div>
+                        <div class="brand-copy">
+                            <small>Community Library Portal</small>
+                            <strong>Leaf &amp; Lantern Library</strong>
+                        </div>
+                    </div>
+                    <nav class="nav-links" aria-label="Primary navigation">
+                        <a asp-controller="Home" asp-action="Index">Discover</a>
+                        <a href="#catalog">Catalog</a>
+                        <a href="#spaces">Reading Spaces</a>
+                        <a href="#visit">Plan a Visit</a>
+                    </nav>
+                </div>
+            </div>
+        </header>
+
+        <main role="main">
+            <div class="container">
+                @RenderBody()
+            </div>
+        </main>
+
+        <footer class="container footer-note">
+            Built for a library setting with your provided palette.
+            &copy; @DateTime.Now.Year - Leaf & Lantern
+        </footer>
+    </div>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
