@@ -1,15 +1,14 @@
-# Stage 1: Build
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /app
 
-# 1. Copy everything
+# Copy everything from your GitHub root
 COPY . .
 
-# 2. Force the build to search the entire system for the project
-RUN dotnet restore $(find /app -name "*.csproj")
-RUN dotnet publish $(find /app -name "*.csproj") -c Release -o /out
+# Build the project
+RUN dotnet restore *.csproj
+RUN dotnet publish *.csproj -c Release -o /out
 
-# Stage 2: Runtime
+# Runtime
 FROM mcr.microsoft.com/dotnet/aspnet:10.0
 WORKDIR /app
 COPY --from=build /out .
@@ -17,5 +16,4 @@ COPY --from=build /out .
 ENV ASPNETCORE_URLS=http://+:10000
 EXPOSE 10000
 
-# This matches the DLL name from your screenshot
 ENTRYPOINT ["dotnet", "MobileApi.dll"]
