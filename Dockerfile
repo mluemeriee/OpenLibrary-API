@@ -1,23 +1,23 @@
 # Stage 1: Build
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
-WORKDIR /source
+WORKDIR /app
 
-# Copy everything
+# 1. Copy everything from your GitHub root into the container
 COPY . .
 
-# This script finds the folder containing the .csproj and moves into it
-RUN PROJECT_DIR=$(find . -name "*.csproj" -exec dirname {} \;) && \
-    cd "$PROJECT_DIR" && \
-    dotnet restore && \
-    dotnet publish -c Release -o /app/publish
+# 2. Restore and Publish
+# We use *.csproj so it finds your project file regardless of the name
+RUN dotnet restore *.csproj
+RUN dotnet publish *.csproj -c Release -o /out
 
 # Stage 2: Runtime
 FROM mcr.microsoft.com/dotnet/aspnet:10.0
 WORKDIR /app
-COPY --from=build /app/publish .
+COPY --from=build /out .
 
+# Render's required port
 ENV ASPNETCORE_URLS=http://+:10000
 EXPOSE 10000
 
-# Matches the project name we saw in your screenshot
+# This must match the name of your .csproj file (MobileApi.dll)
 ENTRYPOINT ["dotnet", "MobileApi.dll"]
